@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  app:
+    container_name: crypto_app
+    build: ./app/
+    environment:
+      DB_SERVER: db
+      DB_DATABASE: crypto
+      DB_USER: sa
+      DB_PASSWORD: Testing1122
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    ports:
+    - "8000:8000"
+    entrypoint: ["sh","./start.sh","8000"]
+    stdin_open: true
+    tty: true
+
+  db:
+    build: ./db/
+    environment:
+      DB_SERVER: db
+      DB_DATABASE: crypto
+      DB_USER: sa
+      DB_PASSWORD: Testing1122
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_SA_PASSWORD: Testing1122
+      ACCEPT_EULA: "Y"
+    volumes:
+      - app_db_volume:/var/opt/sqlserver
+
+volumes:
+  app_db_volume:
